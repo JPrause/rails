@@ -275,7 +275,7 @@ module ActiveRecord
 
       protected
         def trim_message(msg)
-          Rails.env.production? ? (msg[0..1000] + "...") : msg
+          defined?(Rails.env) && Rails.env.production? ? (msg[0..1000] + "...") : msg
         end
 
         def log(sql, name = "SQL", binds = [])
@@ -303,7 +303,7 @@ module ActiveRecord
           $log.error("MIQ(abstract_adapter) Name: [#{name}], Message: [#{message}]") if $log
 
           # Return a generic message when in production to avoid exposing the contents of the SQL query to an end user
-          message = MIQ_STATEMENT_INVALID_MESSAGE if Rails.env.production?
+          message = MIQ_STATEMENT_INVALID_MESSAGE if defined?(Rails.env) && Rails.env.production?
 
           exception = translate_exception(e, message)
           exception.set_backtrace e.backtrace
